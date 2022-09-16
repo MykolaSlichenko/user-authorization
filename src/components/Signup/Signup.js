@@ -16,33 +16,9 @@ import { useNavigate } from "react-router-dom";
 
 import { registerUser } from '../../fakeDB';
 
+import  { validateSignupForm} from '../../utils';
+
 //move to utils
-const EMAIL_REGEX = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-const validateForm = (formData) => {
-  const err = {};
-
-  if (!formData.firstName.trim().length) {
-    err.firstName = true;
-  }
-
-  if (!formData.lastName.trim().length) {
-    err.lastName = true;
-  }
-
-  if (!formData.email.toLowerCase().match(EMAIL_REGEX)) {
-    err.email = true;
-  }
-
-  if (!formData.password.length) {
-    err.password = true;
-  }
-
-  if (!formData.confirmPassword.trim().length || formData.password !== formData.confirmPassword) {
-    err.confirmPassword = true;
-  }
-
-  return err;
-};
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -71,9 +47,9 @@ export default function SignUp() {
 
   const handleClick = () => {
     navigate("/");
-  }
+  };
   // rename to userData, setUserData
-  const [formData, setFormData] = useState({
+  const [userData, setUserData] = useState({
     firstName: '',
     lastName: '',
     email: '',
@@ -84,11 +60,11 @@ export default function SignUp() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const err = validateForm(formData);
+    const err = validateSignupForm(userData);
     setErrors(err);
 
     if (!Object.keys(err).length) {
-      const { success, message } = registerUser(formData);
+      const { success, message } = registerUser(userData);
       if (!success) {
         setErrors(prevState => ({ ...prevState, email: message }));
       } else {
@@ -98,7 +74,7 @@ export default function SignUp() {
     }
   };
 
-  const handleOnChange = (e) => setFormData((prevState) => ({...prevState, [e.target.name]: e.target.value}));
+  const handleOnChange = (e) => setUserData((prevState) => ({...prevState, [e.target.name]: e.target.value}));
   const emailErrorHelperText = typeof errors.email === "string" ? errors.email : '';
 
   return (
@@ -116,7 +92,7 @@ export default function SignUp() {
             <Grid item xs={12} sm={6}>
               <TextField
                 error={errors.firstName}
-                value={formData.firstName}
+                value={userData.firstName}
                 onChange={handleOnChange}
                 autoComplete="fname"
                 name="firstName"
@@ -131,7 +107,7 @@ export default function SignUp() {
             <Grid item xs={12} sm={6}>
               <TextField
                 error={errors.lastName}
-                value={formData.lastName}
+                value={userData.lastName}
                 onChange={handleOnChange}
                 variant="outlined"
                 required
@@ -146,7 +122,7 @@ export default function SignUp() {
               <TextField
                 error={!!errors.email}
                 helperText={emailErrorHelperText}
-                value={formData.email}
+                value={userData.email}
                 onChange={handleOnChange}
                 variant="outlined"
                 required
@@ -160,7 +136,7 @@ export default function SignUp() {
             <Grid item xs={12}>
               <TextField
                 error={errors.password}
-                value={formData.password}
+                value={userData.password}
                 onChange={handleOnChange}
                 variant="outlined"
                 required
@@ -175,7 +151,7 @@ export default function SignUp() {
             <Grid item xs={12}>
               <TextField
                 error={errors.confirmPassword}
-                value={formData.confirmPassword}
+                value={userData.confirmPassword}
                 onChange={handleOnChange}
                 variant="outlined"
                 required

@@ -1,5 +1,4 @@
 import React, {useState} from 'react';
-import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
@@ -7,14 +6,13 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
-// import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 
-import { loginUser } from '../../fakeDB';
-
+import { validateLoginForm} from '../../utils';
+import { loginUser } from "../../fakeDB";
+import { useNavigate } from "react-router-dom";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -40,7 +38,13 @@ const useStyles = makeStyles((theme) => ({
 export default function Login() {
   const classes = useStyles();
 
-  const [formData, setFormData] = useState({
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate("/");
+  };
+  // rename to userData, setUserData
+  const [userData, setUserData] = useState({
     email: '',
     password: ''
   });
@@ -48,20 +52,26 @@ export default function Login() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // const err = validateForm(formData);
-    // setErrors(err);
+    const err = validateLoginForm(userData);
+    setErrors(err);
 
-      const { success, message } = loginUser(formData);
+    if (!Object.keys(err).length) {
+      const { success, message } = loginUser(userData);
+      console.log('success', success);
       if (!success) {
+
         setErrors(prevState => ({ ...prevState, email: message }));
       } else {
         // redirect to home
-        console.log('login');
+        handleClick();
       }
+    }
   };
 
-  const handleOnChange = (e) => setFormData((prevState) => ({...prevState, [e.target.name]: e.target.value}));
+  const handleOnChange = (e) => setUserData((prevState) => ({...prevState, [e.target.name]: e.target.value}));
   const emailErrorHelperText = typeof errors.email === "string" ? errors.email : '';
+
+
 
   return (
     <Container component="main" maxWidth="xs">
@@ -75,8 +85,10 @@ export default function Login() {
         </Typography>
         <form className={classes.form} noValidate onSubmit={handleSubmit}>
           <TextField
-            value={formData.email}
+            error={!!errors.email}
+            value={userData.email}
             onChange={handleOnChange}
+            helperText={emailErrorHelperText}
             variant="outlined"
             margin="normal"
             required
@@ -88,7 +100,8 @@ export default function Login() {
             autoFocus
           />
           <TextField
-            value={formData.password}
+            error={errors.password}
+            value={userData.password}
             onChange={handleOnChange}
             variant="outlined"
             margin="normal"

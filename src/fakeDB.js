@@ -14,7 +14,7 @@ const saveDbData = (data) => localStorage.setItem(LOCAL_STORAGE_KEY, JSON.string
 
 const saveUserToDb = (user) => {
   const dbData = getDbData();
-  const id = 'test'; // fix
+  const id = Date.now(); // fix
   const userObject = { id, ...user };
 
   dbData.users.push(userObject);
@@ -36,14 +36,16 @@ export const registerUser = (userData) => {
   return { success: true };
 };
 
-export const loginUser = (email, password, userData) => {
+export const loginUser = (userData) => {
+  const userEmail = userData.email;
+  const userPassword = userData.password;
   const dbData = getDbData();
   const dbUsers = dbData.users;
-  const isPresent = dbUsers.find(user => user.email === email && user.password === password);
+  const isPresent = dbUsers.find(user => user.email === userEmail && user.password === userPassword);
 
   if (isPresent) {
-    dbUsers.token = isPresent.id;
-    saveUserToDb(userData);
+    dbData.token = isPresent.id;
+    saveDbData(dbData);
     return { success: true };
   }
 
@@ -53,11 +55,15 @@ export const loginUser = (email, password, userData) => {
 export const logoutUser = () => {
   // remove token from local storage
   const dbData = getDbData();
-  const dbUsers = dbData.users;
-  dbUsers.token = null;
+  dbData.token = null;
+  saveDbData(dbData);
   return {success: true}
 };
 
+export const checkIfUserLogged = () => {
+  const dbData = getDbData();
+  return !!dbData.token;
+};
 
 export const initDatabase = () => {
   const existedLocalStorageData = getDbData();
