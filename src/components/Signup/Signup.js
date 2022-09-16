@@ -12,19 +12,37 @@ import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import { useNavigate } from "react-router-dom";
 
-// function Copyright() {
-//   return (
-//     <Typography variant="body2" color="textSecondary" align="center">
-//       {'Copyright © '}
-//       <Link color="inherit" href="https://mui.com/">
-//         Your Website
-//       </Link>{' '}
-//       {new Date().getFullYear()}
-//       {'.'}
-//     </Typography>
-//   );
-// }
+import { registerUser } from '../../fakeDB';
+
+//move to utils
+const EMAIL_REGEX = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+const validateForm = (formData) => {
+  const err = {};
+
+  if (!formData.firstName.trim().length) {
+    err.firstName = true;
+  }
+
+  if (!formData.lastName.trim().length) {
+    err.lastName = true;
+  }
+
+  if (!formData.email.toLowerCase().match(EMAIL_REGEX)) {
+    err.email = true;
+  }
+
+  if (!formData.password.length) {
+    err.password = true;
+  }
+
+  if (!formData.confirmPassword.trim().length || formData.password !== formData.confirmPassword) {
+    err.confirmPassword = true;
+  }
+
+  return err;
+};
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -49,6 +67,12 @@ const useStyles = makeStyles((theme) => ({
 export default function SignUp() {
   const classes = useStyles();
 
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate("/");
+  }
+  // rename to userData, setUserData
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -56,52 +80,26 @@ export default function SignUp() {
     password: '',
     confirmPassword: ''
   });
-
   const [errors, setErrors] = useState({});
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    function validateForm() {
-      const err = {};
-      if (!formData.firstName.trim().length) {
-        err.firstName = true;
+    const err = validateForm(formData);
+    setErrors(err);
+
+    if (!Object.keys(err).length) {
+      const { success, message } = registerUser(formData);
+      if (!success) {
+        setErrors(prevState => ({ ...prevState, email: message }));
+      } else {
+        // redirect to home
+        handleClick();
       }
-      if (!formData.lastName.trim().length) {
-        err.lastName = true;
-      }
-      if (!formData.email.toLowerCase()
-        .match(
-          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-        )) {
-        err.email = true;
-      }
-      if (!formData.password.length) {
-        err.password = true;
-      }
-      if (!formData.confirmPassword.trim().length || formData.password !== formData.confirmPassword) {
-        err.confirmPassword = true;
-      }
-      setErrors(err);
-      // console.log('ERROR', err);
     }
-    validateForm();
-
-    //
-    // console.log('handleSubmit, values: ', e.target.value);
   };
 
-  // console.log(formData);
-
-  const handleOnChange = (e) => {
-    setFormData((prevState) => ({...prevState, [e.target.name]: e.target.value}));
-  };
-
-  // const [data, setData] = useState([]);
-  //
-  // useEffect(() => {
-  //   localStorage.setItem('dataKey', JSON.stringify(data));
-  // }, [data]);
-  // console.log('SetData', setData(e.target.firstName));
+  const handleOnChange = (e) => setFormData((prevState) => ({...prevState, [e.target.name]: e.target.value}));
+  const emailErrorHelperText = typeof errors.email === "string" ? errors.email : '';
 
   return (
     <Container component="main" maxWidth="xs">
@@ -146,7 +144,8 @@ export default function SignUp() {
             </Grid>
             <Grid item xs={12}>
               <TextField
-                error={errors.email}
+                error={!!errors.email}
+                helperText={emailErrorHelperText}
                 value={formData.email}
                 onChange={handleOnChange}
                 variant="outlined"
@@ -191,7 +190,7 @@ export default function SignUp() {
             <Grid item xs={12}>
               <FormControlLabel
                 control={<Checkbox value="allowExtraEmails" color="primary" />}
-                label="I"
+                label="I SHO I ?"
               />
             </Grid>
           </Grid>
@@ -216,3 +215,31 @@ export default function SignUp() {
     </Container>
   );
 }
+
+//      // setErrors(err);
+//       // console.log('ERROR', err);
+//       function setErrN() {
+//         // const errNames = {};
+//         if (err.firstName) {
+//           // console.log('first name must not be empty!');
+//           // errNames.firstName = true;
+//           alert('First name must not be empty!');
+//         } else if (err.lastName) {
+//           // console.log('last name must not be empty!');
+//           alert('Last name must not be empty!');
+//         }
+//         else if (err.email) {
+//           // console.log('email not correct!');
+//           alert('Email not correct!');
+//         }
+//         else if (err.password) {
+//           // console.log('password must not be empty!');
+//           alert('Password must not be empty!');
+//         }
+//         else if (err.confirmPassword) {
+//           // console.log('confirm password not correct!');
+//           alert('Confirm password not correct!');
+//         }
+//         // setErrName(errNames);
+//       }
+//       setErrN();

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -13,20 +13,9 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 
-import Signup from '../Signup/Signup';
+import { loginUser } from '../../fakeDB';
 
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
-      {/*<Link color="inherit" href="https://mui.com/">*/}
-        {/*Your Website*/}
-      {/*</Link>{' '}*/}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -51,6 +40,29 @@ const useStyles = makeStyles((theme) => ({
 export default function Login() {
   const classes = useStyles();
 
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
+  const [errors, setErrors] = useState({});
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // const err = validateForm(formData);
+    // setErrors(err);
+
+      const { success, message } = loginUser(formData);
+      if (!success) {
+        setErrors(prevState => ({ ...prevState, email: message }));
+      } else {
+        // redirect to home
+        console.log('login');
+      }
+  };
+
+  const handleOnChange = (e) => setFormData((prevState) => ({...prevState, [e.target.name]: e.target.value}));
+  const emailErrorHelperText = typeof errors.email === "string" ? errors.email : '';
+
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -61,8 +73,10 @@ export default function Login() {
         <Typography component="h1" variant="h5">
           Login
         </Typography>
-        <form className={classes.form} noValidate>
+        <form className={classes.form} noValidate onSubmit={handleSubmit}>
           <TextField
+            value={formData.email}
+            onChange={handleOnChange}
             variant="outlined"
             margin="normal"
             required
@@ -74,6 +88,8 @@ export default function Login() {
             autoFocus
           />
           <TextField
+            value={formData.password}
+            onChange={handleOnChange}
             variant="outlined"
             margin="normal"
             required
