@@ -54,7 +54,8 @@ export default function SignUp() {
     lastName: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    check: false
   });
   const [errors, setErrors] = useState({});
 
@@ -74,9 +75,13 @@ export default function SignUp() {
     }
   };
 
+  const toggleCheck = () => {
+    setUserData(prevState => ({...prevState, check: !userData.check}));
+  };
+
   const handleOnChange = (e) => setUserData((prevState) => ({...prevState, [e.target.name]: e.target.value}));
   const emailErrorHelperText = typeof errors.email === "string" ? errors.email : '';
-
+  console.log('userData.check', userData.check);
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -165,8 +170,8 @@ export default function SignUp() {
             </Grid>
             <Grid item xs={12}>
               <FormControlLabel
-                control={<Checkbox value="allowExtraEmails" color="primary" />}
-                label="I SHO I ?"
+                control={<Checkbox color="primary" value={userData.check} onChange={toggleCheck} />}
+                label="I agree to provide my personal information."
               />
             </Grid>
           </Grid>
@@ -176,6 +181,7 @@ export default function SignUp() {
             variant="contained"
             color="primary"
             className={classes.submit}
+            disabled={!userData.check}
           >
             Sign Up
           </Button>
