@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -9,6 +9,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 
 import {checkIfUserLogged, logoutUser} from '../../fakeDB';
 import { useNavigate } from "react-router-dom";
+import { getUser } from "../../fakeDB";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -26,10 +27,19 @@ export default function ButtonAppBar() {
   const classes = useStyles();
   const navigate = useNavigate();
 
+  const [ currentUser, setCurrentUser ] = useState({
+    firstName: ''
+  });
+
   useEffect(() => {
     const isLogged = checkIfUserLogged();
     if (!isLogged) {
       navigate("/login");
+    } else {
+      console.log('Login');
+      const user = getUser();
+      console.log('user', user);
+      setCurrentUser(user);
     }
   }, []);
 
@@ -41,9 +51,7 @@ export default function ButtonAppBar() {
     e.preventDefault();
     logoutUser();
     handleClick();
-
   };
-
 
   return (
     <div className={classes.root}>
@@ -55,6 +63,7 @@ export default function ButtonAppBar() {
           <Typography variant="h6" className={classes.title}>
             Home
           </Typography>
+          <div>{currentUser.firstName}</div>
           <Button color="inherit" onClick={handleSubmit}>Logout</Button>
         </Toolbar>
       </AppBar>

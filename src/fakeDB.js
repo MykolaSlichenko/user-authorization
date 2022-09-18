@@ -52,6 +52,14 @@ export const loginUser = (userData) => {
   return { success: false, message: 'Wrong email/password combination.' };
 };
 
+export const getUser = () => {
+  const dbData = getDbData();
+  const token = dbData.token;
+  const users = dbData.users;
+  const user = users.find(user => user.id === token);
+  return user;
+};
+
 export const logoutUser = () => {
   // remove token from local storage
   const dbData = getDbData();
