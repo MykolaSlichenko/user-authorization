@@ -1,6 +1,7 @@
 export const EMAIL_REGEX = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 export const validateSignupForm = (userData) => {
+  console.log('Validate user data: ', userData);
   const err = {};
 
   if (!userData.firstName.trim().length) {
@@ -22,7 +23,7 @@ export const validateSignupForm = (userData) => {
   if (!userData.confirmPassword.trim().length || userData.password !== userData.confirmPassword) {
     err.confirmPassword = true;
   }
-
+  console.log('err: ',  err);
   return err;
 };
 

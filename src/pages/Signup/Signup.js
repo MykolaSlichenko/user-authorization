@@ -46,7 +46,7 @@ export default function SignUp() {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate("/");
+
   };
   // rename to userData, setUserData
   const [userData, setUserData] = useState({
@@ -70,7 +70,7 @@ export default function SignUp() {
         setErrors(prevState => ({ ...prevState, email: message }));
       } else {
         // redirect to home
-        handleClick();
+        navigate("/login");
       }
     }
   };

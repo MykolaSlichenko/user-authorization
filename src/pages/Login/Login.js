@@ -45,8 +45,8 @@ export default function Login() {
   };
   // rename to userData, setUserData
   const [userData, setUserData] = useState({
-    email: '',
-    password: ''
+    email: 'test@test.com',
+    password: '1'
   });
   const [errors, setErrors] = useState({});
 

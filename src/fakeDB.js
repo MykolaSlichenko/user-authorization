@@ -60,6 +60,20 @@ export const getUser = () => {
   return user;
 };
 
+export const getUserUpdate = (userData) => {
+  const userEmail = userData.email;
+  const dbData = getDbData();
+  const dbUsers = dbData.users;
+  const isPresent = dbUsers.find(user => user.email === userEmail);
+
+  if (isPresent) {
+    return { success: false, message: 'user with such name already exists' };
+  }
+
+  saveUserToDb(userData);
+  return { success: true };
+};
+
 export const logoutUser = () => {
   // remove token from local storage
   const dbData = getDbData();
