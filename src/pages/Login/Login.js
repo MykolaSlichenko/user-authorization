@@ -41,7 +41,7 @@ export default function Login() {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate("/");
+    navigate("/home");
   };
   // rename to userData, setUserData
   const [userData, setUserData] = useState({

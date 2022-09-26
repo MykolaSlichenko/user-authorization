@@ -13,6 +13,7 @@ import { initDatabase } from './fakeDB';
 import Header from './components/Header/Header';
 import {checkIfUserLogged, getUser, registerUser} from './fakeDB';
 import {useNavigate} from "react-router-dom";
+import ProtectedRoute from './ProtectedRoute';
 
 function Layout() {
   return (
@@ -29,7 +30,7 @@ function Layout() {
   );
 }
 
-
+// const [isAuth, setIsAuth] = useState(true);
 
 function App() {
   useEffect(() => {
@@ -37,6 +38,7 @@ function App() {
   }, []);
 
   const navigate = useNavigate();
+  const isLogged = checkIfUserLogged();
 
   useEffect(() => {
     // const isLogged = checkIfUserLogged();
@@ -52,13 +54,31 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/" element={<Header />}>
-        <Route index element={<Home />} />
+      {/*<Route path="/" element={<Header />}>*/}
+        {/*<Route index element={<Home />} />*/}
+      {/*</Route>*/}
+      {/*<Route>*/}
+        {/*<Route path='signup' element={<Signup />} />*/}
+        {/*<Route path='login' element={<Login />} />*/}
+        {/*/!*<ProtectedRoute path="/home" component={Home} />*!/*/}
+
+        {/**/}
+
+      {/*</Route>*/}
+      <Route path="/" element={<Header />} >
+        <Route
+          path="/home"
+          element={
+            <ProtectedRoute user={isLogged}>
+              <Home />
+            </ProtectedRoute>
+          }
+        />
       </Route>
-      <Route>
-        <Route path='signup' element={<Signup />} />
-        <Route path='login' element={<Login />} />
-      </Route>
+      <Route path='signup' element={<Signup />} />
+      <Route path='login' element={<Login />} />
+
+
     </Routes>
   )
   // return (

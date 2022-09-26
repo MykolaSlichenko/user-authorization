@@ -1,8 +1,11 @@
 import React from 'react';
+// import {withRouter} from 'react-router-dom';
 
-
-export default function Home() {
+function Home() {
  return (
    <div>Home</div>
  )
 }
+
+export default Home;
+// export default withRouter(Home)
