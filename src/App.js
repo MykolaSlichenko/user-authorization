@@ -41,10 +41,11 @@ function App() {
   const isLogged = checkIfUserLogged();
 
   useEffect(() => {
-    // const isLogged = checkIfUserLogged();
-    // if (!isLogged) {
-    //   navigate("/login");
-    // } else {
+    const isLogged = checkIfUserLogged();
+    if (isLogged) {
+      navigate("/home");
+    }
+    // else {
     //   console.log('Login');
     //   const user = getUser();
     //   console.log('user', user);

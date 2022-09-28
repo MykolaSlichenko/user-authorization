@@ -60,18 +60,23 @@ export const getUser = () => {
   return user;
 };
 
-export const getUserUpdate = (userData) => {
-  const userEmail = userData.email;
+export const saveUserUpdateToDb = (userId, userData) => {
+  console.log(userId, userData);
   const dbData = getDbData();
-  const dbUsers = dbData.users;
-  const isPresent = dbUsers.find(user => user.email === userEmail);
 
-  if (isPresent) {
-    return { success: false, message: 'user with such name already exists' };
+  const index = dbData.users.findIndex(user => user.id === userId);
+
+  if (index < 0) {
+    throw 'Not find such user';
   }
 
-  saveUserToDb(userData);
+  dbData.users[index] = userData;
+
+  saveDbData(dbData);
   return { success: true };
+
+  // saveUpdatedUserToDb(userData);
+  // return { success: true };
 };
 
 export const logoutUser = () => {

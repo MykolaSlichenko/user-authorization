@@ -1,12 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {makeStyles} from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import {alpha} from '@material-ui/core/styles';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
@@ -22,13 +20,13 @@ import Button from '@material-ui/core/Button';
 
 import {checkIfUserLogged, logoutUser, registerUser} from '../../fakeDB';
 import {useNavigate} from "react-router-dom";
-import {getUser} from "../../fakeDB";
+import {getUser, saveUserUpdateToDb} from "../../fakeDB";
 import {validateSignupForm} from "../../utils";
 
 import useStyles from './Header.styles';
 import { Outlet } from "react-router-dom";
 
-export default function Header({children}) {
+export default function Header() {
   const classes = useStyles();
   const navigate = useNavigate();
 
@@ -72,7 +70,18 @@ export default function Header({children}) {
     setMobileMoreAnchorEl(null);
   };
 
+  useEffect(() => {
+    const isLogged = checkIfUserLogged();
+    if (isLogged) {
+      const user = getUser();
+      setUserData(user);
+    }
+  }, []);
+
   const handleEditUser = () => {
+    // const user = getUser();
+    // // console.log('user', user);
+    // setCurrentUser(user);
     setEditedUser(false);
   };
 
@@ -156,7 +165,8 @@ export default function Header({children}) {
     lastName: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    id: '',
   });
 
   const [errors, setErrors] = useState({});
@@ -164,15 +174,21 @@ export default function Header({children}) {
   const handleSubmitForm = (e) => {
     e.preventDefault();
     const err = validateSignupForm(userData);
+    const user = getUser();
     setErrors(err);
+    console.log('setCurrentUser(user);', user);
 
     if (!Object.keys(err).length) {
-      const {success, message} = registerUser(userData);
+
+      const userId = userData.id;
+      //rename to saveUserToDb
+      const {success, message} = saveUserUpdateToDb(userId, userData);
       if (!success) {
         setErrors(prevState => ({...prevState, email: message}));
       } else {
         // redirect to home
-        handleClick();
+        // handleClick();
+        console.log("User Saved!")
       }
     }
   };
@@ -184,22 +200,25 @@ export default function Header({children}) {
       <form className={classes.formEdit} noValidate autoComplete="off">
         <div>
           <TextField
+            name="firstName"
             disabled={editedField}
             error={errors.firstName}
             onChange={handleOnChange}
             id="standard-required"
             label='First Name'
-            value={currentUser.firstName}
+            value={userData.firstName}
           />
           <TextField
+            name="lastName"
             disabled={editedField}
             error={errors.lastName}
             onChange={handleOnChange}
             id="standard-required"
             label='Last Name'
-            value={currentUser.lastName}
+            value={userData.lastName}
           />
           <TextField
+            name="email"
             disabled={editedField}
             error={errors.email}
             onChange={handleOnChange}
@@ -208,8 +227,10 @@ export default function Header({children}) {
             type="email"
             autoComplete="current-password"
             defaultValue={currentUser.email}
+            value={userData.email}
           />
           <TextField
+            name="password"
             disabled={editedField}
             error={errors.password}
             onChange={handleOnChange}
@@ -217,8 +238,10 @@ export default function Header({children}) {
             label="Password"
             type="password"
             autoComplete="current-password"
+            value={userData.password}
           />
           <TextField
+            name="confirmPassword"
             disabled={editedField}
             error={errors.confirmPassword}
             onChange={handleOnChange}
@@ -226,13 +249,14 @@ export default function Header({children}) {
             label="Confirm Password"
             type="password"
             autoComplete="current-password"
+            value={userData.confirmPassword}
           />
           <div className={classes.buttons}><Button onClick={handleSubmitForm}>Submit</Button>
             <Button onClick={() => setEditedField(false)} variant="contained" color="primary">
               Edit
             </Button>
             <Button onClick={() => setEditedUser(true)} variant="contained" color="secondary">
-              Close Profile
+              Close
             </Button>
           </div>
 
@@ -257,7 +281,7 @@ export default function Header({children}) {
           </Typography>
           <div className={classes.grow}/>
           <div className={classes.sectionDesktop}>
-            <div className={classes.desktopUserName}>{currentUser.firstName}</div>
+            <div className={classes.desktopUserName}>{userData.firstName}</div>
             <IconButton
               edge="end"
               aria-label="account of current user"
@@ -271,7 +295,7 @@ export default function Header({children}) {
           </div>
 
           <div className={classes.sectionMobile}>
-            <div className={classes.currentUserName}>{currentUser.firstName}</div>
+            <div className={classes.currentUserName}>{userData.firstName}</div>
             <IconButton
               aria-label="show more"
               aria-controls={mobileMenuId}
