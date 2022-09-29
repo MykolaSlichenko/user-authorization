@@ -1,11 +1,11 @@
 import React from 'react';
-import {Outlet, Navigate} from 'react-router-dom';
-import {checkIfUserLogged} from './fakeDB';
+import { Navigate } from 'react-router-dom';
+import { checkIfUserLogged } from './fakeDB';
 
 const ProtectedRoute = ({ user, children }) => {
-  const isLoged = checkIfUserLogged();
+  const isLogged = checkIfUserLogged();
 
-  if (!isLoged) {
+  if (!isLogged) {
     return <Navigate to="/login" replace />;
   }
   return children;

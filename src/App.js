@@ -1,36 +1,15 @@
 import React, { useEffect } from 'react';
 import './App.css';
-import {
-  Routes,
-  Route,
-  Link,
-  Outlet,
-} from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Home from './pages/Home/Home';
+import ProfileInformation from './pages/ProfileInformation/ProfileInformation';
 import Signup from './pages/Signup/Signup';
 import Login from './pages/Login/Login';
 import { initDatabase } from './fakeDB';
 import Header from './components/Header/Header';
-import {checkIfUserLogged, getUser, registerUser} from './fakeDB';
-import {useNavigate} from "react-router-dom";
+import { checkIfUserLogged } from './fakeDB';
+import { useNavigate } from "react-router-dom";
 import ProtectedRoute from './ProtectedRoute';
-
-function Layout() {
-  return (
-    <div>
-      <h1>Welcome to the app!</h1>
-      <nav>
-        <Link to="invoices">Invoices</Link> |{" "}
-        <Link to="dashboard">Dashboard</Link>
-      </nav>
-      <div className="content">
-        <Outlet />
-      </div>
-    </div>
-  );
-}
-
-// const [isAuth, setIsAuth] = useState(true);
 
 function App() {
   useEffect(() => {
@@ -40,32 +19,15 @@ function App() {
   const navigate = useNavigate();
   const isLogged = checkIfUserLogged();
 
-  useEffect(() => {
-    const isLogged = checkIfUserLogged();
-    if (isLogged) {
-      navigate("/home");
-    }
-    // else {
-    //   console.log('Login');
-    //   const user = getUser();
-    //   console.log('user', user);
-    //
-    // }
-  }, []);
+  // useEffect(() => {
+  //   const isLogged = checkIfUserLogged();
+  //   if (isLogged) {
+  //     navigate("/home");
+  //   }
+  // }, []);
 
   return (
     <Routes>
-      {/*<Route path="/" element={<Header />}>*/}
-        {/*<Route index element={<Home />} />*/}
-      {/*</Route>*/}
-      {/*<Route>*/}
-        {/*<Route path='signup' element={<Signup />} />*/}
-        {/*<Route path='login' element={<Login />} />*/}
-        {/*/!*<ProtectedRoute path="/home" component={Home} />*!/*/}
-
-        {/**/}
-
-      {/*</Route>*/}
       <Route path="/" element={<Header />} >
         <Route
           path="/home"
@@ -75,22 +37,19 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute user={isLogged}>
+              <ProfileInformation />
+            </ProtectedRoute>
+          }
+        />
       </Route>
       <Route path='signup' element={<Signup />} />
       <Route path='login' element={<Login />} />
-
-
     </Routes>
   )
-  // return (
-  //   <Routes>
-  //     <Route path='/'>
-  //       <RouteWrapper index element={<Home />} layout={<Header />} />
-  //       <Route path='signup' element={<Signup />} />
-  //       <Route path='login' element={<Login />} />
-  //     </Route>
-  //   </Routes>
-  // );
 }
 
 

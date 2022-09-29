@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -18,10 +18,10 @@ import clsx from 'clsx';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 
-import {checkIfUserLogged, logoutUser, registerUser} from '../../fakeDB';
-import {useNavigate} from "react-router-dom";
-import {getUser, saveUserUpdateToDb} from "../../fakeDB";
-import {validateSignupForm} from "../../utils";
+import { checkIfUserLogged, logoutUser } from '../../fakeDB';
+import { useNavigate } from "react-router-dom";
+import { getUser, saveUserUpdateToDb } from "../../fakeDB";
+import { validateSignupForm } from "../../utils";
 
 import useStyles from './Header.styles';
 import { Outlet } from "react-router-dom";
@@ -30,17 +30,30 @@ export default function Header() {
   const classes = useStyles();
   const navigate = useNavigate();
 
-  const [currentUser, setCurrentUser] = useState({
+  const [editedUser, setEditedUser] = useState(true);
+  const [editedField, setEditedField] = useState(true);
+  const [userData, setUserData] = useState({
     firstName: '',
     lastName: '',
     email: '',
     password: '',
     confirmPassword: '',
-    id: ''
+    id: '',
   });
-  // const [users, setUsers] = useState([]);
-  const [editedUser, setEditedUser] = useState(true);
-  const [editedField, setEditedField] = useState(true);
+  const [errors, setErrors] = useState({});
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
+  const [open, setOpen] = useState(false);
+  const isMenuOpen = Boolean(anchorEl);
+  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+
+  useEffect(() => {
+    const isLogged = checkIfUserLogged();
+    if (isLogged) {
+      const user = getUser();
+      setUserData(user);
+    }
+  }, []);
 
 
   const handleClick = () => {
@@ -53,15 +66,6 @@ export default function Header() {
     handleClick();
   };
 
-//UI
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
-
-  const [open, setOpen] = useState(false);
-
-  const isMenuOpen = Boolean(anchorEl);
-  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
-
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -70,18 +74,7 @@ export default function Header() {
     setMobileMoreAnchorEl(null);
   };
 
-  useEffect(() => {
-    const isLogged = checkIfUserLogged();
-    if (isLogged) {
-      const user = getUser();
-      setUserData(user);
-    }
-  }, []);
-
   const handleEditUser = () => {
-    // const user = getUser();
-    // // console.log('user', user);
-    // setCurrentUser(user);
     setEditedUser(false);
   };
 
@@ -105,7 +98,6 @@ export default function Header() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      {/*<MenuItem onClick={handleMenuClose}>Edit Profile</MenuItem>*/}
       <MenuItem color="inherit" onClick={handleSubmit}>Logout</MenuItem>
     </Menu>
   );
@@ -135,7 +127,6 @@ export default function Header() {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
       return;
     }
-
     setOpen(open);
   };
 
@@ -159,36 +150,21 @@ export default function Header() {
     </div>
   );
 
-  //EDIT
-  const [userData, setUserData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    id: '',
-  });
-
-  const [errors, setErrors] = useState({});
-
   const handleSubmitForm = (e) => {
     e.preventDefault();
     const err = validateSignupForm(userData);
-    const user = getUser();
     setErrors(err);
-    console.log('setCurrentUser(user);', user);
 
     if (!Object.keys(err).length) {
-
       const userId = userData.id;
-      //rename to saveUserToDb
       const {success, message} = saveUserUpdateToDb(userId, userData);
       if (!success) {
         setErrors(prevState => ({...prevState, email: message}));
       } else {
         // redirect to home
         // handleClick();
-        console.log("User Saved!")
+        console.log("User Saved!");
+        alert('Profile Information Updated.');
       }
     }
   };
@@ -226,7 +202,7 @@ export default function Header() {
             label="Email"
             type="email"
             autoComplete="current-password"
-            defaultValue={currentUser.email}
+            defaultValue={userData.email}
             value={userData.email}
           />
           <TextField
@@ -259,7 +235,6 @@ export default function Header() {
               Close
             </Button>
           </div>
-
         </div>
       </form>
     </React.Fragment>
@@ -269,15 +244,20 @@ export default function Header() {
     <div>
       <AppBar position="static">
         <Toolbar>
-          <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu"
-                      onClick={toggleDrawer(true)}>
+          <IconButton
+            edge="start"
+            className={classes.menuButton}
+            color="inherit"
+            aria-label="menu"
+            onClick={toggleDrawer(true)}
+          >
             <MenuIcon/>
           </IconButton>
           <Drawer anchor="left" open={open} onClose={toggleDrawer(false)}>
             {list()}
           </Drawer>
           <Typography variant="h6" className={classes.title}>
-            {/*Home*/}
+            Header
           </Typography>
           <div className={classes.grow}/>
           <div className={classes.sectionDesktop}>
@@ -310,7 +290,6 @@ export default function Header() {
       </AppBar>
       {renderMobileMenu}
       {renderMenu}
-      {/*{children}*/}
       <Outlet />
     </div>
   );
