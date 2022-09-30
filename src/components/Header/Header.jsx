@@ -15,13 +15,10 @@ import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
 import ListItem from '@material-ui/core/ListItem';
 import clsx from 'clsx';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
 
 import { checkIfUserLogged, logoutUser } from '../../fakeDB';
 import { useNavigate } from "react-router-dom";
-import { getUser, saveUserUpdateToDb } from "../../fakeDB";
-import { validateSignupForm } from "../../utils";
+import { getUser } from "../../fakeDB";
 
 import useStyles from './Header.styles';
 import { Outlet } from "react-router-dom";
@@ -30,8 +27,6 @@ export default function Header() {
   const classes = useStyles();
   const navigate = useNavigate();
 
-  const [editedUser, setEditedUser] = useState(true);
-  const [editedField, setEditedField] = useState(true);
   const [userData, setUserData] = useState({
     firstName: '',
     lastName: '',
@@ -40,7 +35,6 @@ export default function Header() {
     confirmPassword: '',
     id: '',
   });
-  const [errors, setErrors] = useState({});
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
   const [open, setOpen] = useState(false);
@@ -60,6 +54,10 @@ export default function Header() {
     navigate("/login");
   };
 
+  const handleOpenProfile = () => {
+    navigate("/profile");
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     logoutUser();
@@ -72,10 +70,6 @@ export default function Header() {
 
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
-  };
-
-  const handleEditUser = () => {
-    setEditedUser(false);
   };
 
   const handleMenuClose = () => {
@@ -101,9 +95,6 @@ export default function Header() {
       <MenuItem color="inherit" onClick={handleSubmit}>Logout</MenuItem>
     </Menu>
   );
-  // const handleEditUser = (user) => {
-  //   setEditedUser(editedUser && user?.id === editedUser?.id ? null : user);
-  // };
   const mobileMenuId = 'primary-search-account-menu-mobile';
   const renderMobileMenu = (
     <Menu
@@ -140,104 +131,11 @@ export default function Header() {
       <List>
         <ListItem button>
           <ListItemIcon><AccountCircle/></ListItemIcon>
-          <ListItemText onClick={handleEditUser}>Profile Information</ListItemText>
+          <ListItemText onClick={handleOpenProfile}>Profile Information</ListItemText>
         </ListItem>
       </List>
       <Divider/>
-      <List>
-        {editedUser ? null : renderUser()}
-      </List>
     </div>
-  );
-
-  const handleSubmitForm = (e) => {
-    e.preventDefault();
-    const err = validateSignupForm(userData);
-    setErrors(err);
-
-    if (!Object.keys(err).length) {
-      const userId = userData.id;
-      const {success, message} = saveUserUpdateToDb(userId, userData);
-      if (!success) {
-        setErrors(prevState => ({...prevState, email: message}));
-      } else {
-        // redirect to home
-        // handleClick();
-        console.log("User Saved!");
-        alert('Profile Information Updated.');
-      }
-    }
-  };
-
-  const handleOnChange = (e) => setUserData((prevState) => ({...prevState, [e.target.name]: e.target.value}));
-
-  const renderUser = () => (
-    <React.Fragment>
-      <form className={classes.formEdit} noValidate autoComplete="off">
-        <div>
-          <TextField
-            name="firstName"
-            disabled={editedField}
-            error={errors.firstName}
-            onChange={handleOnChange}
-            id="standard-required"
-            label='First Name'
-            value={userData.firstName}
-          />
-          <TextField
-            name="lastName"
-            disabled={editedField}
-            error={errors.lastName}
-            onChange={handleOnChange}
-            id="standard-required"
-            label='Last Name'
-            value={userData.lastName}
-          />
-          <TextField
-            name="email"
-            disabled={editedField}
-            error={errors.email}
-            onChange={handleOnChange}
-            id="standard-password-input"
-            label="Email"
-            type="email"
-            autoComplete="current-password"
-            defaultValue={userData.email}
-            value={userData.email}
-          />
-          <TextField
-            name="password"
-            disabled={editedField}
-            error={errors.password}
-            onChange={handleOnChange}
-            id="standard-password-input"
-            label="Password"
-            type="password"
-            autoComplete="current-password"
-            value={userData.password}
-          />
-          <TextField
-            name="confirmPassword"
-            disabled={editedField}
-            error={errors.confirmPassword}
-            onChange={handleOnChange}
-            id="standard-password-input"
-            label="Confirm Password"
-            type="password"
-            autoComplete="current-password"
-            value={userData.confirmPassword}
-          />
-          <div className={classes.buttons}><Button onClick={handleSubmitForm}>Submit</Button>
-            <Button onClick={() => setEditedField(false)} variant="contained" color="primary">
-              Edit
-            </Button>
-            <Button onClick={() => setEditedUser(true)} variant="contained" color="secondary">
-              Close
-            </Button>
-          </div>
-        </div>
-      </form>
-    </React.Fragment>
   );
 
   return (
