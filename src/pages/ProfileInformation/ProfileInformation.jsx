@@ -83,12 +83,9 @@ export default function ProfileInformation() {
         setErrors(prevState => ({...prevState, email: message}));
       } else {
         // redirect to home
-        // handleClick();
-        console.log("User Saved!");
+        // console.log("User Saved!");
         alert('Profile information has been updated.');
-
         handleClick();
-
       }
     }
   };
@@ -163,8 +160,6 @@ export default function ProfileInformation() {
               </Button> : <div className={classes.button}><Button onClick={handleSubmitForm} variant="contained" color="primary">Save</Button><Button onClick={() => setEditedField(true)} variant="contained" color="secondary">
                 Cancel
               </Button></div> }
-
-
             {/*</div>*/}
           </div>
         </form>
