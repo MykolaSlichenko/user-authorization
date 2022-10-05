@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
   buttons: {
     '& > *': {
       margin: theme.spacing(1),
-      marginRight: theme.spacing(12),
+      marginLeft: theme.spacing(14),
     },
   },
   formEdit: {
@@ -155,11 +155,17 @@ export default function ProfileInformation() {
             />
             <div className={classes.buttons}>
 
-              {editedField ? <Button onClick={() => setEditedField(false)} variant="contained" color="primary">
+              {editedField
+                ? <Button onClick={() => setEditedField(false)} variant="contained" color="primary">
                 Edit
-              </Button> : <div className={classes.button}><Button onClick={handleSubmitForm} variant="contained" color="primary">Save</Button><Button onClick={() => setEditedField(true)} variant="contained" color="secondary">
-                Cancel
-              </Button></div> }
+              </Button>
+                :
+                <div className={classes.button}>
+                  <Button onClick={handleSubmitForm} variant="contained" color="primary">Save</Button>
+                  <Button onClick={() => setEditedField(true)} variant="contained" color="secondary">
+                    Cancel
+                  </Button>
+                </div> }
             {/*</div>*/}
           </div>
         </form>

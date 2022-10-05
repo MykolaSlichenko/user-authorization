@@ -55,6 +55,7 @@ export default function Header() {
   };
 
   const handleOpenProfile = () => {
+    setOpen(!open);
     navigate("/profile");
   };
 
