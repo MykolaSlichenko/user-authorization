@@ -23,18 +23,25 @@ import { getUser } from "../../fakeDB";
 import useStyles from './Header.styles';
 import { Outlet } from "react-router-dom";
 
+import { useDispatch, useSelector } from 'react-redux';
+
 export default function Header() {
   const classes = useStyles();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const first = useSelector(state => state.firstName);
+  const last = useSelector(state => state.lastName);
+  console.log(first);
+  console.log(last);
 
-  const [userData, setUserData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    id: '',
-  });
+  // const [userData, setUserData] = useState({
+  //   firstName: '',
+  //   lastName: '',
+  //   email: '',
+  //   password: '',
+  //   confirmPassword: '',
+  //   id: '',
+  // });
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
   const [open, setOpen] = useState(false);
@@ -45,7 +52,8 @@ export default function Header() {
     const isLogged = checkIfUserLogged();
     if (isLogged) {
       const user = getUser();
-      setUserData(user);
+      dispatch({type: "ADD_USER", payload: user.firstName});
+      // setUserData(user);
     }
   }, []);
 
@@ -160,7 +168,7 @@ export default function Header() {
           </Typography>
           <div className={classes.grow}/>
           <div className={classes.sectionDesktop}>
-            <div className={classes.desktopUserName}>{userData.firstName}</div>
+            <div className={classes.desktopUserName}>{first}</div>
             <IconButton
               edge="end"
               aria-label="account of current user"
@@ -174,7 +182,7 @@ export default function Header() {
           </div>
 
           <div className={classes.sectionMobile}>
-            <div className={classes.currentUserName}>{userData.firstName}</div>
+            <div className={classes.currentUserName}>{first}</div>
             <IconButton
               aria-label="show more"
               aria-controls={mobileMenuId}
