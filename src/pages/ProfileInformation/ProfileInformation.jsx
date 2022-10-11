@@ -2,45 +2,14 @@ import React, { useState, useEffect } from 'react';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 
 import { validateSignupForm} from '../../utils';
 import {getUser, saveUserUpdateToDb} from "../../fakeDB";
 import { useNavigate } from "react-router-dom";
 import { checkIfUserLogged } from '../../fakeDB';
+import useStyles from './ProfileInformation.styles';
 
-
-const useStyles = makeStyles((theme) => ({
-  paper: {
-    marginTop: theme.spacing(12),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    border: 'solid 2px grey'
-  },
-  form: {
-    width: '10%', // Fix IE 11 issue.
-    // marginTop: theme.spacing(1),
-  },
-  buttons: {
-    '& > *': {
-      margin: theme.spacing(1),
-      marginLeft: theme.spacing(14),
-    },
-  },
-  formEdit: {
-    '& .MuiTextField-root': {
-      margin: theme.spacing(1),
-      width: '96%',
-    },
-  },
-  close: {
-    backgroundColor: '#f5f5f5',
-    color: 'lightGrey',
-    width: '1px'
-  }
-}));
 
 export default function ProfileInformation() {
   const classes = useStyles();
@@ -100,7 +69,6 @@ export default function ProfileInformation() {
           X
         </Button>
         <form className={classes.formEdit} noValidate autoComplete="off">
-          {/*<div>*/}
             <TextField
               name="firstName"
               disabled={editedField}
@@ -166,7 +134,6 @@ export default function ProfileInformation() {
                     Cancel
                   </Button>
                 </div> }
-            {/*</div>*/}
           </div>
         </form>
       </div>
