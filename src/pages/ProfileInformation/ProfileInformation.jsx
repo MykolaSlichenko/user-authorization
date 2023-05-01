@@ -5,7 +5,7 @@ import TextField from '@material-ui/core/TextField';
 import Container from '@material-ui/core/Container';
 
 import { validateSignupForm} from '../../utils';
-import {getUser, saveUserUpdateToDb} from "../../fakeDB";
+import {getUser, registerUser, saveUserUpdateToDb, deleteUserFromDb} from "../../fakeDB";
 import { useNavigate } from "react-router-dom";
 import { checkIfUserLogged } from '../../fakeDB';
 import useStyles from './ProfileInformation.styles';
@@ -26,11 +26,6 @@ export default function ProfileInformation() {
   });
   const [errors, setErrors] = useState({});
 
-
-  const handleClick = () => {
-    navigate("/home");
-  };
-
   useEffect(() => {
     const isLogged = checkIfUserLogged();
     if (isLogged) {
@@ -38,6 +33,20 @@ export default function ProfileInformation() {
       setUserData(user);
     }
   }, []);
+
+  const handleDeleteUser = () => {
+    const { success, message } = deleteUserFromDb(userData);
+    if (!success) {
+      setErrors(prevState => ({ ...prevState, email: message }));
+    } else {
+      // redirect to home
+      navigate("/signup");
+    }
+  };
+
+  const handleClick = () => {
+    navigate("/home");
+  };
 
 
   const handleSubmitForm = (e) => {
@@ -130,9 +139,10 @@ export default function ProfileInformation() {
                 :
                 <div className={classes.button}>
                   <Button onClick={handleSubmitForm} variant="contained" color="primary">Save</Button>
-                  <Button onClick={() => setEditedField(true)} variant="contained" color="secondary">
+                  <Button onClick={() => setEditedField(true)} variant="contained">
                     Cancel
                   </Button>
+                  <Button onClick={handleDeleteUser} variant="contained" color="secondary">Delete</Button>
                 </div> }
           </div>
         </form>
