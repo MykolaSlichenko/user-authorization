@@ -23,41 +23,27 @@ import { getUser } from "../../fakeDB";
 import useStyles from './Header.styles';
 import { Outlet } from "react-router-dom";
 
-// import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { setUserData } from '../../store/userAction';
 
 export default function Header() {
   const classes = useStyles();
   const navigate = useNavigate();
-  // const dispatch = useDispatch();
-  // const first = useSelector(state => state.firstName);
-  // const last = useSelector(state => state.lastName);
-  // console.log(first);
-  // console.log(last);
-
-  const [userData, setUserData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    id: '',
-  });
+  const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
   const [open, setOpen] = useState(false);
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+  const userData = useSelector(state => state.user);
 
   useEffect(() => {
     const isLogged = checkIfUserLogged();
     if (isLogged) {
       const user = getUser();
-      // dispatch({type: "ADD_USER", payload: user.firstName});
-      // console.log('user Header', user);
-      setUserData(user);
+      dispatch(setUserData(user));
     }
-  }, []);
-
+  }, [dispatch]);
 
   const handleClick = () => {
     navigate("/login");

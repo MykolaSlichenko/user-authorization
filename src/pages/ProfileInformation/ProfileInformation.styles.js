@@ -14,8 +14,10 @@ const useStyles = makeStyles((theme) => ({
   },
   buttons: {
     '& > *': {
-      margin: theme.spacing(1),
-      marginLeft: theme.spacing(14),
+      display: 'flex',
+      justifyContent: 'space-between',
+      margin: theme.spacing(3),
+      // marginLeft: theme.spacing(12),
     },
   },
   formEdit: {

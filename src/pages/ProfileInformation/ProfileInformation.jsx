@@ -10,36 +10,30 @@ import { useNavigate } from "react-router-dom";
 import { checkIfUserLogged } from '../../fakeDB';
 import useStyles from './ProfileInformation.styles';
 
+import { useDispatch, useSelector } from 'react-redux';
+import { setUserData, updateUserField } from '../../store/userAction';
 
 export default function ProfileInformation() {
   const classes = useStyles();
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
+  const userData = useSelector((state) => state.user);
   const [editedField, setEditedField] = useState(true);
-  const [userData, setUserData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    id: '',
-  });
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
     const isLogged = checkIfUserLogged();
     if (isLogged) {
       const user = getUser();
-      setUserData(user);
+      dispatch(setUserData(user)); // dispatch action to update userData
     }
-  }, []);
+  }, [dispatch]);
 
   const handleDeleteUser = () => {
     const { success, message } = deleteUserFromDb(userData);
     if (!success) {
       setErrors(prevState => ({ ...prevState, email: message }));
     } else {
-      // redirect to home
       navigate("/signup");
     }
   };
@@ -47,7 +41,6 @@ export default function ProfileInformation() {
   const handleClick = () => {
     navigate("/home");
   };
-
 
   const handleSubmitForm = (e) => {
     e.preventDefault();
@@ -60,15 +53,17 @@ export default function ProfileInformation() {
       if (!success) {
         setErrors(prevState => ({...prevState, email: message}));
       } else {
-        // redirect to home
-        // console.log("User Saved!");
         alert('Profile information has been updated.');
         handleClick();
       }
     }
   };
 
-  const handleOnChange = (e) => setUserData((prevState) => ({...prevState, [e.target.name]: e.target.value}));
+
+  const handleOnChange = (e) => {
+    dispatch(updateUserField(e.target.name, e.target.value));
+  };
+  // const handleOnChange = (e) => setUserData((prevState) => ({...prevState, [e.target.name]: e.target.value}));
 
   return (
     <Container component="main" maxWidth="xs">
