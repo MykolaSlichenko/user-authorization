@@ -115,6 +115,7 @@ export const logoutUser = () => {
 export const checkIfUserLogged = () => {
   const dbData = getDbData();
   // console.log('getDbData', dbData);
+  if (dbData === null) return;
   return !!dbData.token;
 };
 
