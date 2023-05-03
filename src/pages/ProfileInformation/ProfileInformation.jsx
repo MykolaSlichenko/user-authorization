@@ -4,6 +4,12 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import Container from '@material-ui/core/Container';
 
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+
 import { validateSignupForm} from '../../utils';
 import {getUser, registerUser, saveUserUpdateToDb, deleteUserFromDb} from "../../fakeDB";
 import { useNavigate } from "react-router-dom";
@@ -13,6 +19,8 @@ import useStyles from './ProfileInformation.styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUserData, updateUserField } from '../../store/userAction';
 
+import DialogMessage from '../../components/DialogMessage/DialogMessage';
+
 export default function ProfileInformation() {
   const classes = useStyles();
   const navigate = useNavigate();
@@ -20,6 +28,9 @@ export default function ProfileInformation() {
   const userData = useSelector((state) => state.user);
   const [editedField, setEditedField] = useState(true);
   const [errors, setErrors] = useState({});
+  const [open, setOpen] = useState(false);
+  const [openDialogDelete, setOpenDialogDelete] = useState(false);
+
 
   useEffect(() => {
     const isLogged = checkIfUserLogged();
@@ -34,12 +45,36 @@ export default function ProfileInformation() {
     if (!success) {
       setErrors(prevState => ({ ...prevState, email: message }));
     } else {
-      navigate("/signup");
+      handleClickOpenDelete();
+      // navigate("/signup");
     }
+  };
+
+  const handleClickOpenModalMessage = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleClickOpenDelete = () => {
+    setOpenDialogDelete(true);
+  };
+
+  const handleCloseDelete = () => {
+    setOpenDialogDelete(false);
   };
 
   const handleClick = () => {
     navigate("/home");
+  };
+
+  const handleClickCloseProfileInfo = () => {
+    const user = getUser();
+    dispatch(setUserData(user));
+    handleClickOpenModalMessage();
+    // navigate("/home");
   };
 
   const handleSubmitForm = (e) => {
@@ -53,8 +88,8 @@ export default function ProfileInformation() {
       if (!success) {
         setErrors(prevState => ({...prevState, email: message}));
       } else {
-        alert('Profile information has been updated.');
-        handleClick();
+        // alert('Profile information has been updated.');
+        handleClickCloseProfileInfo();
       }
     }
   };
@@ -140,6 +175,20 @@ export default function ProfileInformation() {
                   <Button onClick={handleDeleteUser} variant="contained" color="secondary">Delete</Button>
                 </div> }
           </div>
+          <DialogMessage
+            open={open}
+            handleClose={handleClose}
+            title="Message from 3000!!!!!"
+            message="Profile information has been updated."
+            buttonLabel="Ok"
+          />
+          <DialogMessage
+            open={openDialogDelete}
+            handleClose={handleCloseDelete}
+            title="Very urgent message from 3000!!!!!"
+            message="Your profile has been permanently deleted!"
+            buttonLabel="Ok"
+          />
         </form>
       </div>
     </Container>

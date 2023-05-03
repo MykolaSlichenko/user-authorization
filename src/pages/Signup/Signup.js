@@ -51,7 +51,7 @@ export default function SignUp() {
         setErrors(prevState => ({ ...prevState, email: message }));
       } else {
         // redirect to home
-        navigate("/login");
+        navigate("/home");
       }
     }
   };

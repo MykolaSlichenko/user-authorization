@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
   },
   close: {
     backgroundColor: '#f5f5f5',
-    color: 'lightGrey',
+    color: 'black',
     width: '1px'
   }
 }));

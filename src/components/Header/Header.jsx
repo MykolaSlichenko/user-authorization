@@ -36,6 +36,7 @@ export default function Header() {
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
   const userData = useSelector(state => state.user);
+  // let isLogged = false;
 
   useEffect(() => {
     const isLogged = checkIfUserLogged();
@@ -44,7 +45,7 @@ export default function Header() {
       dispatch(setUserData(user));
     }
   }, [dispatch]);
-
+  // console.log('isLogged', checkIfUserLogged());
   const handleClick = () => {
     navigate("/login");
   };
@@ -77,6 +78,8 @@ export default function Header() {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
+  const isLoggedUser = checkIfUserLogged();
+
   const menuId = 'primary-search-account-menu';
   const renderMenu = (
     <Menu
@@ -88,7 +91,7 @@ export default function Header() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem color="inherit" onClick={handleSubmit}>Logout</MenuItem>
+      <MenuItem color="inherit" onClick={handleSubmit}>{isLoggedUser ? 'Logout' : 'Login'}</MenuItem>
     </Menu>
   );
   const mobileMenuId = 'primary-search-account-menu-mobile';
@@ -105,7 +108,7 @@ export default function Header() {
 
       {/*<MenuItem >Profile Information</MenuItem>*/}
       {/*// <MenuItem onClick={handleMenuClose}><div onClick={() => handleEditUser(user)>Edit Profile</div></MenuItem>*/}
-      <MenuItem color="inherit" onClick={handleSubmit}>Logout</MenuItem>
+      <MenuItem color="inherit" onClick={handleSubmit}>{isLoggedUser ? 'Logout' : 'Login'}</MenuItem>
 
     </Menu>
   );
