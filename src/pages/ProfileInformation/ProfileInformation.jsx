@@ -4,12 +4,6 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import Container from '@material-ui/core/Container';
 
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-
 import { validateSignupForm} from '../../utils';
 import {getUser, registerUser, saveUserUpdateToDb, deleteUserFromDb} from "../../fakeDB";
 import { useNavigate } from "react-router-dom";
@@ -45,8 +39,7 @@ export default function ProfileInformation() {
     if (!success) {
       setErrors(prevState => ({ ...prevState, email: message }));
     } else {
-      handleClickOpenDelete();
-      // navigate("/signup");
+      navigate("/signup");
     }
   };
 
@@ -56,14 +49,7 @@ export default function ProfileInformation() {
 
   const handleClose = () => {
     setOpen(false);
-  };
-
-  const handleClickOpenDelete = () => {
-    setOpenDialogDelete(true);
-  };
-
-  const handleCloseDelete = () => {
-    setOpenDialogDelete(false);
+    setEditedField(true);
   };
 
   const handleClick = () => {
@@ -180,13 +166,6 @@ export default function ProfileInformation() {
             handleClose={handleClose}
             title="Message from 3000!!!!!"
             message="Profile information has been updated."
-            buttonLabel="Ok"
-          />
-          <DialogMessage
-            open={openDialogDelete}
-            handleClose={handleCloseDelete}
-            title="Very urgent message from 3000!!!!!"
-            message="Your profile has been permanently deleted!"
             buttonLabel="Ok"
           />
         </form>
