@@ -5,7 +5,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(12),
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
+    // alignItems: 'center',
     border: 'solid 2px grey'
   },
   form: {

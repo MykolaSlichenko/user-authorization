@@ -11,13 +11,11 @@ const getDbData = () => {
 };
 
 const saveDbData = (data) => localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data));
-// const removeItem = (data) => localStorage.removeItem(LOCAL_STORAGE_KEY);
 
 const saveUserToDb = (user) => {
   const dbData = getDbData();
-  const id = Date.now(); // fix
+  const id = Date.now();
   const userObject = { id, ...user };
-
   dbData.users.push(userObject);
   dbData.token = id;
   saveDbData(dbData);
@@ -26,8 +24,6 @@ const saveUserToDb = (user) => {
 export const deleteUserFromDb = (user) => {
   const dbData = getDbData();
   const userId = user.id;
-  console.log('userID', userId);
-
   // Find the index of the user in the users array
   const userIndex = dbData.users.findIndex(u => u.id === userId);
   console.log('userIndex', userIndex);
@@ -36,14 +32,10 @@ export const deleteUserFromDb = (user) => {
     // Remove the user from the users array
     dbData.users.splice(userIndex, 1);
     dbData.token = null;
-
     // Save the updated dbData object to local storage
-
     saveDbData(dbData);
-
     return { success: true };
   }
-
   return { success: false, message: 'User not found' };
 };
 
@@ -86,7 +78,7 @@ export const getUser = () => {
 };
 
 export const saveUserUpdateToDb = (userId, userData) => {
-  console.log(userId, userData);
+  // console.log(userId, userData);
   const dbData = getDbData();
 
   const index = dbData.users.findIndex(user => user.id === userId);
@@ -114,7 +106,6 @@ export const logoutUser = () => {
 
 export const checkIfUserLogged = () => {
   const dbData = getDbData();
-  // console.log('getDbData', dbData);
   if (dbData === null) return;
   return !!dbData.token;
 };
@@ -127,7 +118,6 @@ export const initDatabase = () => {
       users: [],
       token: null,
     };
-
     saveDbData(dataStructure);
   }
 };

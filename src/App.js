@@ -8,7 +8,6 @@ import Login from './pages/Login/Login';
 import { initDatabase } from './fakeDB';
 import Header from './components/Header/Header';
 import { checkIfUserLogged } from './fakeDB';
-import { useNavigate } from "react-router-dom";
 import ProtectedRoute from './ProtectedRoute';
 
 function App() {
@@ -16,15 +15,7 @@ function App() {
     initDatabase();
   }, []);
 
-  const navigate = useNavigate();
   const isLogged = checkIfUserLogged();
-
-  // useEffect(() => {
-  //   const isLogged = checkIfUserLogged();
-  //   if (isLogged) {
-  //     navigate("/home");
-  //   }
-  // }, []);
 
   return (
     <Routes>
@@ -54,8 +45,3 @@ function App() {
 
 
 export default App;
-
-//TODO:
-//1. Add header to layout in react route
-//2. Make public and private routes
-//3. Add auto redirect if user not logged in to login and redirect to home if user logged in and open login or sign up
