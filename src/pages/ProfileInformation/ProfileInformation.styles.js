@@ -5,7 +5,6 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(12),
     display: 'flex',
     flexDirection: 'column',
-    // alignItems: 'center',
     border: 'solid 2px grey'
   },
   form: {
@@ -30,6 +29,11 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: '#f5f5f5',
     color: 'black',
     width: '1px'
+  },
+  save: {
+    color: 'black',
+    fontWeight: '900',
+    backgroundColor: 'green'
   }
 }));
 

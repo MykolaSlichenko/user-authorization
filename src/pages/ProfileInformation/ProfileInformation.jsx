@@ -154,7 +154,7 @@ export default function ProfileInformation() {
               </Button>
                 :
                 <div className={classes.button}>
-                  <Button onClick={handleSubmitForm} variant="contained" color="primary">Save</Button>
+                  <Button onClick={handleSubmitForm} variant="contained" color="primary" className={classes.save}>Save</Button>
                   <Button onClick={() => setEditedField(true)} variant="contained">
                     Cancel
                   </Button>
